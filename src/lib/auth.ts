@@ -1,10 +1,10 @@
-import { NextAuthOptions } from 'next-auth';
+
 import GoogleProvider from 'next-auth/providers/google';
 import GitHubProvider from 'next-auth/providers/github';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import clientPromise from '@/lib/mongodb';
 
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
   adapter: MongoDBAdapter(clientPromise),
   providers: [
     GoogleProvider({
@@ -17,16 +17,18 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    strategy: 'jwt',
+    strategy: 'jwt' as const,
   },
   callbacks: {
-    async session({ session, token }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async session({ session, token }: any) {
       if (token.sub) {
         session.user.id = token.sub;
       }
       return session;
     },
-    async jwt({ token, user }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id;
       }

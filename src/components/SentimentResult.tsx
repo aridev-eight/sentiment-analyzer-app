@@ -109,7 +109,7 @@ export default function SentimentResult({ result }: SentimentResultProps) {
         {/* Original Text */}
         <div className="bg-gray-50 rounded-lg p-4">
           <h4 className="text-sm font-medium text-gray-700 mb-2">Analyzed Text</h4>
-          <p className="text-gray-800 text-sm leading-relaxed">"{text}"</p>
+          <p className="text-gray-800 text-sm leading-relaxed">&ldquo;{text}&rdquo;</p>
         </div>
 
         {/* Timestamp */}
