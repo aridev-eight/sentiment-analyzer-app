@@ -7,7 +7,11 @@ import { HistoryService } from '@/lib/history';
 import SentimentResult from './SentimentResult';
 import DemoSection from './DemoSection';
 
-export default function SentimentForm() {
+interface SentimentFormProps {
+  onAnalysisComplete?: () => void; // Callback to trigger dashboard refresh
+}
+
+export default function SentimentForm({ onAnalysisComplete }: SentimentFormProps) {
   const [text, setText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<SentimentAnalysisResponse | null>(null);
@@ -31,6 +35,11 @@ export default function SentimentForm() {
       
       // Save to history
       HistoryService.saveAnalysis(analysisResult);
+      
+      // Trigger dashboard refresh
+      if (onAnalysisComplete) {
+        onAnalysisComplete();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');
     } finally {
