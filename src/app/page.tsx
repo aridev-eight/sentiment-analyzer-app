@@ -1,9 +1,19 @@
+'use client';
+
+import { useState } from 'react';
 import Header from '@/components/Header';
 import SentimentForm from '@/components/SentimentForm';
 import AnalyticsDashboard from '@/components/AnalyticsDashboard';
 import Footer from '@/components/Footer';
 
 export default function Home() {
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const handleAnalysisComplete = () => {
+    // Increment trigger to refresh dashboard
+    setRefreshTrigger(prev => prev + 1);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
@@ -19,11 +29,11 @@ export default function Home() {
           </p>
         </div>
 
-        <SentimentForm />
+        <SentimentForm onAnalysisComplete={handleAnalysisComplete} />
 
         {/* Analytics Dashboard */}
         <div className="mt-16">
-          <AnalyticsDashboard />
+          <AnalyticsDashboard refreshTrigger={refreshTrigger} />
         </div>
 
         {/* Features Section */}
@@ -42,9 +52,9 @@ export default function Home() {
             <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
               <span className="text-green-600 text-xl">📊</span>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Detailed Analytics</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Real-time Analytics</h3>
             <p className="text-gray-600 text-sm">
-              Track your analysis history and view emotion distribution patterns over time.
+              View key metrics and sentiment distribution patterns with live updates.
             </p>
           </div>
           
@@ -52,7 +62,7 @@ export default function Home() {
             <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
               <span className="text-purple-600 text-xl">⚡</span>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Real-time Analysis</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Instant Results</h3>
             <p className="text-gray-600 text-sm">
               Get instant emotion analysis results with confidence scores and detailed breakdowns.
             </p>
