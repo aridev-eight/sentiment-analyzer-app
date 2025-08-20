@@ -74,7 +74,7 @@ export default function SentimentForm({ onAnalysisComplete }: SentimentFormProps
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Type or paste your text here to analyze its emotions and sentiment..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all duration-200 text-gray-900 placeholder-gray-500"
                 rows={4}
                 maxLength={1000}
                 disabled={isLoading}
