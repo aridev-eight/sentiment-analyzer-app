@@ -8,7 +8,7 @@ export default function Footer() {
             Powered by Hugging Face AI
           </p>
           <p className="text-xs text-gray-400 mt-2">
-            © 2024 Sentiment Analyzer. A portfolio project showcasing modern web development and AI integration.
+            © 2024 Sentiment Analyzer. A portfolio project built by <a href="https://www.linkedin.com/in/arundhati-bandopadhyaya/" target="_blank" className="text-gray-600 hover:text-gray-500">Arundhati Bandopadhyaya</a> showcasing modern web development and AI integration.
           </p>
         </div>
       </div>
