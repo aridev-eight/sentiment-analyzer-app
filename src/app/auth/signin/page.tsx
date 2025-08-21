@@ -2,11 +2,12 @@
 
 import { signIn, getSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
+import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-export default function SignIn() {
+function SignInContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -127,17 +128,29 @@ export default function SignIn() {
           </div>
 
           <div className="text-center">
-            <a
+            <Link
               href="/"
               className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
             >
               ← Back to analyzer
-            </a>
+            </Link>
           </div>
         </div>
       </main>
 
       <Footer />
     </div>
+  );
+}
+
+export default function SignIn() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <SignInContent />
+    </Suspense>
   );
 }

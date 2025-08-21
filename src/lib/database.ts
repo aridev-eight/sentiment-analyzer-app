@@ -67,7 +67,7 @@ export class DatabaseService {
       const db = await this.getDb();
       const collection = db.collection('analyses');
 
-      let query: any = { userId };
+      const query: Record<string, unknown> = { userId };
 
       // Add search filter
       if (searchTerm) {

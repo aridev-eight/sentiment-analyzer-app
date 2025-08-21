@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { DatabaseService } from '@/lib/database';
-import { SentimentAnalysisRequest, SentimentAnalysisResponse, HuggingFaceResponse, ApiError } from '@/types';
+import { SentimentAnalysisRequest, SentimentAnalysisResponse, ApiError } from '@/types';
 
 // Primary and fallback models
 const PRIMARY_MODEL = 'https://api-inference.huggingface.co/models/j-hartmann/emotion-english-distilroberta-base';
@@ -45,7 +45,7 @@ async function makeHuggingFaceRequest(apiKey: string, text: string, modelUrl: st
   }
 }
 
-async function tryAnalysisWithFallback(apiKey: string, text: string): Promise<{ data: any; modelUsed: string }> {
+async function tryAnalysisWithFallback(apiKey: string, text: string): Promise<{ data: unknown; modelUsed: string }> {
   try {
     // Try primary model first
     console.log('Trying primary emotion model...');
@@ -188,14 +188,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Save to MongoDB if user is authenticated
-    if (session?.user?.id) {
+    if (session && typeof session === 'object' && 'user' in session && session.user && typeof session.user === 'object' && 'id' in session.user) {
       try {
         console.log('Saving analysis to MongoDB for authenticated user:', session.user.id);
-        await DatabaseService.saveAnalysis(session.user.id, sentimentResponse);
+        await DatabaseService.saveAnalysis(session.user.id as string, sentimentResponse);
         console.log('Analysis saved to MongoDB for user:', session.user.id);
       } catch (dbError) {
         console.error('Failed to save analysis to MongoDB:', dbError);
-        // Don't fail the request if database save fails
       }
     } else {
       console.log('No authenticated user, skipping MongoDB save');
