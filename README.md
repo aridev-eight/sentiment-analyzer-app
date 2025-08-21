@@ -31,7 +31,7 @@ A modern, real-time sentiment analysis web application built with Next.js 14, Ty
 ### 1. Clone the repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/arundhati-work/sentiment-analyzer-app.git
 cd sentiment-analyzer-app
 ```
 
