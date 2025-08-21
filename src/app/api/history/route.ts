@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { DatabaseService } from '@/lib/database';
 
@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session?.user?.id) {
+    if (!session || typeof session !== 'object' || !('user' in session) || !session.user || typeof session.user !== 'object' || !('id' in session.user)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '50');
 
     const analyses = await DatabaseService.searchUserAnalyses(
-      session.user.id,
+      session.user.id as string,
       searchTerm,
       filterSentiment,
       limit
@@ -37,7 +37,7 @@ export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session?.user?.id) {
+    if (!session || typeof session !== 'object' || !('user' in session) || !session.user || typeof session.user !== 'object' || !('id' in session.user)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -46,13 +46,13 @@ export async function DELETE(request: NextRequest) {
 
     if (analysisId) {
       // Delete specific analysis
-      const success = await DatabaseService.deleteAnalysis(session.user.id, analysisId);
+      const success = await DatabaseService.deleteAnalysis(session.user.id as string, analysisId);
       if (!success) {
         return NextResponse.json({ error: 'Analysis not found' }, { status: 404 });
       }
     } else {
       // Clear all history
-      const success = await DatabaseService.clearUserHistory(session.user.id);
+      const success = await DatabaseService.clearUserHistory(session.user.id as string);
       if (!success) {
         return NextResponse.json({ error: 'Failed to clear history' }, { status: 500 });
       }

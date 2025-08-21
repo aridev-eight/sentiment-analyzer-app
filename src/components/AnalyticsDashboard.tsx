@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { AnalyticsData, AnalysisHistoryItem } from '@/types';
+import { AnalyticsData } from '@/types';
 import { HistoryService } from '@/lib/history';
-import { getSentimentColor, formatConfidence, getEmotionColor, getEmotionIcon } from '@/lib/utils';
+import { getSentimentColor, formatConfidence } from '@/lib/utils';
 
 interface AnalyticsDashboardProps {
   refreshTrigger?: number; // Add prop to trigger refresh
