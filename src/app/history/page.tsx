@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { AnalysisHistoryItem } from '@/types';
 import { getSentimentColor, formatConfidence, getEmotionColor, getEmotionIcon } from '@/lib/utils';
 import Header from '@/components/Header';
@@ -10,7 +10,6 @@ import Footer from '@/components/Footer';
 
 export default function HistoryPage() {
   const { data: session, status } = useSession();
-  const router = useRouter();
   const [analyses, setAnalyses] = useState<AnalysisHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,20 +20,15 @@ export default function HistoryPage() {
   const [sortBy, setSortBy] = useState<'date' | 'sentiment' | 'confidence'>('date');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
-  useEffect(() => {
+  const fetchAnalyses = useCallback(async () => {
     if (status === 'loading') return;
     
-    // Allow both authenticated and guest users to access history
-    fetchAnalyses();
-  }, [session, status, router]);
-
-  const fetchAnalyses = async () => {
     try {
       setLoading(true);
       
       if (session) {
         // Authenticated user - fetch from MongoDB
-        console.log('Fetching history for authenticated user:', session.user?.id);
+        console.log('Fetching history for authenticated user:', (session.user as { id?: string })?.id);
         const response = await fetch('/api/history');
         
         if (!response.ok) {
@@ -55,7 +49,11 @@ export default function HistoryPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [session, status]);
+
+  useEffect(() => {
+    fetchAnalyses();
+  }, [fetchAnalyses]);
 
   const deleteAnalysis = async (id: string) => {
     try {
@@ -69,9 +67,7 @@ export default function HistoryPage() {
           throw new Error('Failed to delete analysis');
         }
       } else {
-        // Guest user - delete from localStorage
-        const { HistoryService } = await import('@/lib/history');
-        // Note: localStorage doesn't have individual delete, so we'll just remove from state
+        // Guest user - Note: localStorage doesn't have individual delete, so we'll just remove from state
       }
       
       // Remove from local state
@@ -177,7 +173,7 @@ export default function HistoryPage() {
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back to Home Button */}
         <div className="mb-6">
-          <a
+          <Link
             href="/"
             className="inline-flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
           >
@@ -185,7 +181,7 @@ export default function HistoryPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             <span className="text-sm font-medium">Back to Home</span>
-          </a>
+          </Link>
         </div>
 
         {/* Page Header */}
@@ -199,7 +195,7 @@ export default function HistoryPage() {
               <div className="flex items-center space-x-2">
                 <span className="text-blue-600">💡</span>
                 <p className="text-sm text-blue-700">
-                  You're viewing your local history. <a href="/auth/signin" className="font-medium underline hover:text-blue-800">Sign in</a> to save your analyses permanently and access them across devices.
+                  You&apos;re viewing your local history. <Link href="/auth/signin" className="font-medium underline hover:text-blue-800">Sign in</Link> to save your analyses permanently and access them across devices.
                 </p>
               </div>
             </div>
@@ -338,12 +334,12 @@ export default function HistoryPage() {
                 : 'Start analyzing text to build your history!'}
             </p>
             {!searchTerm && filterSentiment === 'all' && filterEmotion === 'all' && (
-              <a
+              <Link
                 href="/"
                 className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
                 Start Analyzing
-              </a>
+              </Link>
             )}
           </div>
         )}
@@ -408,7 +404,7 @@ export default function HistoryPage() {
                       {/* Full Text */}
                       <div>
                         <h4 className="text-sm font-medium text-gray-700 mb-2">Full Text</h4>
-                        <p className="text-gray-800 bg-white p-4 rounded border">"{item.text}"</p>
+                        <p className="text-gray-800 bg-white p-4 rounded border">&ldquo;{item.text}&rdquo;</p>
                       </div>
 
                       {/* Emotions Breakdown */}
