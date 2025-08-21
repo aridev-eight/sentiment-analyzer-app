@@ -1,4 +1,4 @@
-
+// Remove NextAuthOptions import - let TypeScript infer the type
 import GoogleProvider from 'next-auth/providers/google';
 import GitHubProvider from 'next-auth/providers/github';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
@@ -39,6 +39,4 @@ export const authOptions = {
     signIn: '/auth/signin',
     error: '/auth/signin',
   },
-  // Allow multiple OAuth providers for the same email
-  allowDangerousEmailAccountLinking: true,
 };

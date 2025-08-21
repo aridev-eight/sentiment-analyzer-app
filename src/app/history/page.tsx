@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AnalysisHistoryItem } from '@/types';
 import { getSentimentColor, formatConfidence, getEmotionColor, getEmotionIcon } from '@/lib/utils';
@@ -11,7 +10,6 @@ import Footer from '@/components/Footer';
 
 export default function HistoryPage() {
   const { data: session, status } = useSession();
-  const router = useRouter();
   const [analyses, setAnalyses] = useState<AnalysisHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +21,8 @@ export default function HistoryPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const fetchAnalyses = useCallback(async () => {
+    if (status === 'loading') return;
+    
     try {
       setLoading(true);
       
@@ -49,14 +49,11 @@ export default function HistoryPage() {
     } finally {
       setLoading(false);
     }
-  }, [session]);
+  }, [session, status]);
 
   useEffect(() => {
-    if (status === 'loading') return;
-    
-    // Allow both authenticated and guest users to access history
     fetchAnalyses();
-  }, [fetchAnalyses, status, router]);
+  }, [fetchAnalyses]);
 
   const deleteAnalysis = async (id: string) => {
     try {
@@ -70,8 +67,7 @@ export default function HistoryPage() {
           throw new Error('Failed to delete analysis');
         }
       } else {
-        // Guest user - delete from localStorage
-        // Note: localStorage doesn't have individual delete, so we'll just remove from state
+        // Guest user - Note: localStorage doesn't have individual delete, so we'll just remove from state
       }
       
       // Remove from local state
@@ -199,7 +195,7 @@ export default function HistoryPage() {
               <div className="flex items-center space-x-2">
                 <span className="text-blue-600">💡</span>
                 <p className="text-sm text-blue-700">
-                  You&apos;re viewing your local history. <a href="/auth/signin" className="font-medium underline hover:text-blue-800">Sign in</a> to save your analyses permanently and access them across devices.
+                  You&apos;re viewing your local history. <Link href="/auth/signin" className="font-medium underline hover:text-blue-800">Sign in</Link> to save your analyses permanently and access them across devices.
                 </p>
               </div>
             </div>

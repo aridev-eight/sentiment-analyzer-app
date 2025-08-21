@@ -195,7 +195,6 @@ export async function POST(request: NextRequest) {
         console.log('Analysis saved to MongoDB for user:', session.user.id);
       } catch (dbError) {
         console.error('Failed to save analysis to MongoDB:', dbError);
-        // Don't fail the request if database save fails
       }
     } else {
       console.log('No authenticated user, skipping MongoDB save');
