@@ -156,4 +156,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-Your Name - [arundhatib.work@gmail.com](mailto:arundhatib.work@gmail.com)
+Arundhati Bandopadhyaya - [arundhatib.work@gmail.com](mailto:arundhatib.work@gmail.com)
